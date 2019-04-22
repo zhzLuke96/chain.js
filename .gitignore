@@ -59,3 +59,9 @@ typings/
 
 # next.js build output
 .next
+
+# local html file
+*.html
+
+# vscode
+.vscode/
