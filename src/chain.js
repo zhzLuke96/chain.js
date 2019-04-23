@@ -123,5 +123,6 @@ class Chain {
 
 export default{
     NewChain,
-    Chain
+    Chain,
+    Chainer
 }
