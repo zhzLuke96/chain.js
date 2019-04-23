@@ -1,5 +1,7 @@
 # chain.js
-All actions can wrapped asynchronous chain calls.
+> **🌊Be Water My Bro🌊**
+
+***All actions can wrapped into asynchronous chain calls.***
 
 # Build setup
 ```
@@ -30,11 +32,11 @@ const chainA = chain.NewChain([">> context <<",0])
                 .doit(v => console.log(v))
                 .map(v => v[0])
                 .doit(v => console.log(v))
-// request
+
 const request = chain.NewChain("http://localhost:8080/api")
                 .extend(chain.ex.http)
-                .get(res => res.data)
                 .onerror(err => console.warn(err))
+                .get(res => JSON.parse(res))
                 .doit(v => console.log("get value ==>",v))
 ```
 
@@ -54,7 +56,7 @@ const DOMEx = {
             resolve();
         };
     },
-    bindEv(type) {
+    bind(type) {
         return function ($dom, resolve) {
             $dom.addEventListener(type, ev => {
                 this.ctx = ev;
@@ -72,14 +74,13 @@ function $$(query){
 }
 // usage
 $$("body")
-    .css("padding: 2rem;")
-    .css("font-weight: bold;")
+    .css({
+        padding:"2rem",
+        "font-weight":"bold"
+    })
     .html("<p>All actions can wrapped asynchronous chain calls</p>")
-    .bindEv("click")
-    .doit(ev => {
-        console.log(`click: X[${ev.clientX}] Y[${ev.clientY}]`)
-        }
-    )
+    .bind("click")
+    .doit(ev => console.log(`click: X[${ev.clientX}] Y[${ev.clientY}]`))
     .map(ev => ev.target)
     .doit(dom => console.log(dom.innerHTML))
     .ondone(ctx => console.log("single chain call been done"))
@@ -88,14 +89,14 @@ $$("body")
 ## promise-like
 ```js
 function NewPromise(fn) {
-    const flower = new Flower();
-    const inner = NewFlow();
+    const env = new Chainer();
+    const inner = NewChain()
         .extend({
             then(cb) {
-                return function (ctx, reslove) {
+                return function (ctx, resolve) {
                     let res = cb(ctx);
                     if (res) this.ctx = res;
-                    reslove();
+                    resolve();
                 }
             },
             catch (cb) {
@@ -104,15 +105,16 @@ function NewPromise(fn) {
                 }
             }
         })
+    // async init
     setTimeout(
         () => fn(
             res => {
-                flower.ctx = res;
-                inner.__ref.next(flower);
+                env.ctx = res;
+                inner.__ref.next(env);
             },
             err => {
-                inner.__ref.crash(flower, err);
-                inner.__ref.complete(flower);
+                inner.__ref.crash(env, err);
+                inner.__ref.complete(env);
             }
         ), 1);
     return inner;
@@ -151,27 +153,25 @@ export default {
         let timer;
         return function (_, resolve) {
             timer && clearTimeout(timer);
-            timer = setTimeout(resolve, delay || default_delay);
+            timer = setTimeout(resolve, delay);
         }
     },
     throttle(delay) {
         let start;
         return function (_, resolve) {
             let now = Date.now()
-            if (!start) {
+            if (!start)start = now;
+            if (now - start >= delay) {
                 start = now;
-            }
-            if (now - start >= (delay || default_delay)) {
                 resolve();
-                start = now;
-            } else {
-                this.__ref.complete(this)
             }
+            // ...
         }
     }
     // ...
 }
 ```
+
 
 # LICENSE
 GPL-3.0
