@@ -1,19 +1,8 @@
-import chain from "./chain"
+import index from "./index.common"
+const $global = window ? window : global
 
-import std from "./extends/std"
-import http from "./extends/http"
-import dom from "./extends/dom"
-import kit from "./tools"
-
-const {NewChain,Chain} = chain
-
-export default {
-    NewChain,
-    Chain,
-    ex:{
-        std,
-        http,
-        dom,
-    },
-    kit
+function define(key, obj) {
+    $global[key] = obj
 }
+
+define("chain", index)

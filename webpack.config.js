@@ -5,8 +5,8 @@ module.exports = {
     devtool: "cheap-module-eval-source-map",
     // entry: ["@babel/polyfill","./src/main.js"],
     entry: {
-        "chain.common":"./src/index.js",
-        "chain": "./src/index.common.js"
+        "chain.common":"./src/index.common.js",
+        "chain": "./src/index.js"
     },
     output: {
         path: path.join(__dirname, "./dist/"),
