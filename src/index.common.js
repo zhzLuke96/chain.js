@@ -3,14 +3,17 @@ import chain from "./chain"
 import std from "./extends/std"
 import http from "./extends/http"
 import dom from "./extends/dom"
-import kit from "./tools"
+import kit from "./kits"
 
-const {NewChain,Chain} = chain
+const {
+    NewChain,
+    Chain
+} = chain
 
 export default {
     NewChain,
     Chain,
-    ex:{
+    ex: {
         std,
         http,
         dom,

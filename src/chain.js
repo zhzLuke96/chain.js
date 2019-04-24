@@ -9,8 +9,10 @@ function Chainer(ctx) {
 }
 
 function NewChain(ctx) {
-    if(ctx){
-        return new Chain().outter().doit(function(){this.ctx = ctx})
+    if (ctx) {
+        return new Chain().outter().doit(function () {
+            this.ctx = ctx
+        })
     }
     return new Chain().outter();
 }
@@ -53,6 +55,21 @@ class Chain {
                     fn.call(this, ctx)
                     resolve()
                 });
+                return this.none()
+            },
+            resize(start, end) {
+                if (!end) {
+                    end = start
+                    start = 0
+                }
+                self.opts = self.opts.slice(start, end)
+                return this.none()
+            },
+            rollback(times) {
+                times = times || 1
+                for (let idx = 0; idx < times; idx++) {
+                    self.opts.pop()
+                }
                 return this.none()
             },
             extend(o) {
@@ -121,7 +138,7 @@ class Chain {
     }
 }
 
-export default{
+export default {
     NewChain,
     Chain,
     Chainer
