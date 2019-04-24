@@ -1,10 +1,30 @@
 const default_delay = 500
-
+const arrify = o => Array.prototype.slice.call(o)
+const arr2iter = arr => (function*(){
+    for (const item of arr) yield item;
+})()
 export default {
     on(ctx) {
         return function (_, resolve) {
             this.ctx = ctx
             resolve()
+        }
+    },
+    oniter(iter){
+        let inneriter = null
+        if(typeof iter != typeof (()=>{})){
+            // inneriter = arrify(iter)[Symbol.iterator]()
+            inneriter = arr2iter(arrify(iter))
+        }else{
+            inneriter = iter
+        }
+        return function(_, resolve){
+            while(true){
+                const {value,done} = inneriter.next()
+                if(done)break
+                this.ctx = value
+                resolve(true)
+            }
         }
     },
     map(fn) {
